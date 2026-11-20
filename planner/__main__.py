@@ -203,7 +203,15 @@ def main(argv: list[str] | None = None) -> int:
     if cmd == "check":
         return check(cfg)
     if cmd == "auth":
-        _auth(cfg, args.code)
+        from .sync.rmcloud import RmapiError
+
+        try:
+            _auth(cfg, args.code)
+        except RmapiError as exc:
+            print(f"✗ Login fehlgeschlagen: {exc}\n"
+                  "  Neuen Code holen: https://my.remarkable.com/device/desktop/connect", file=sys.stderr)
+            return 1
+        print("✓ reMarkable Cloud verbunden")
         return 0
     if cmd == "healthcheck":
         return healthcheck(cfg)

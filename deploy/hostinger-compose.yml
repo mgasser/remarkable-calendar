@@ -1,0 +1,46 @@
+# Compose-Datei für den Hostinger Docker Manager (hPanel -> VPS -> Docker Manager -> Compose).
+# Docker baut das Image direkt aus dem GitHub-Repository; es muss nichts auf den Server kopiert werden.
+# Die Variablen trägt man im Docker Manager unter "Environment" ein (Format KEY=value, eine pro Zeile).
+# GIT_REF: Branch oder Tag, der gebaut wird (Standard: main).
+services:
+  planner:
+    build:
+      context: https://github.com/mgasser/remarkable-calendar.git#${GIT_REF:-main}
+    image: remarkable-calendar:latest
+    restart: unless-stopped
+    environment:
+      TZ: "${TZ:-Europe/Zurich}"
+      PLANNER_LANGUAGE: "${PLANNER_LANGUAGE:-de}"
+      PAGE_FORMAT: "${PAGE_FORMAT:-remarkable}"
+      MONTHS_AHEAD: "${MONTHS_AHEAD:-3}"
+      DAY_START_HOUR: "${DAY_START_HOUR:-6}"
+      DAY_END_HOUR: "${DAY_END_HOUR:-22}"
+      NOTES_PAGES: "${NOTES_PAGES:-10}"
+      COMPOSIO_API_KEY: "${COMPOSIO_API_KEY:-}"
+      COMPOSIO_USER_ID: "${COMPOSIO_USER_ID:-}"
+      COMPOSIO_TASKS_ACCOUNT_ID: "${COMPOSIO_TASKS_ACCOUNT_ID:-}"
+      COMPOSIO_CALENDAR_ACCOUNT_ID: "${COMPOSIO_CALENDAR_ACCOUNT_ID:-}"
+      COMPOSIO_TOOLKIT_VERSION: "${COMPOSIO_TOOLKIT_VERSION:-}"
+      GOOGLE_TASKS_LISTS: "${GOOGLE_TASKS_LISTS:-}"
+      GOOGLE_CALENDAR_IDS: "${GOOGLE_CALENDAR_IDS:-}"
+      HOLIDAY_CALENDAR_IDS: "${HOLIDAY_CALENDAR_IDS:-}"
+      ICS_URLS: "${ICS_URLS:-}"
+      HOLIDAY_ICS_URLS: "${HOLIDAY_ICS_URLS:-}"
+      SYNC_MODE: "${SYNC_MODE:-cloud}"
+      REMARKABLE_FOLDER: "${REMARKABLE_FOLDER:-Kalender}"
+      RMAPI_ONE_TIME_CODE: "${RMAPI_ONE_TIME_CODE:-}"
+      REMARKABLE_HOST: "${REMARKABLE_HOST:-}"
+      REMARKABLE_PASSWORD: "${REMARKABLE_PASSWORD:-}"
+      SYNC_TIMES: "${SYNC_TIMES:-04:30}"
+      RUN_ON_START: "${RUN_ON_START:-true}"
+      HEALTHCHECK_URL: "${HEALTHCHECK_URL:-}"
+    volumes:
+      - planner-data:/data
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+volumes:
+  planner-data:

@@ -1,22 +1,17 @@
-version: '3.8'
-
 services:
-  calendar:
+  planner:
     build: .
     image: remarkable-calendar:latest
-    pull_policy: build
     container_name: remarkable-calendar
-    network_mode: host
-    environment:
-      - GOOGLE_CREDENTIALS_FILE=${GOOGLE_CREDENTIALS_FILE:-credentials.json}
-      - TODOIST_API_TOKEN=${TODOIST_API_TOKEN}
-      - REMARKABLE_HOST=${REMARKABLE_HOST}
-      - REMARKABLE_PASSWORD=${REMARKABLE_PASSWORD}
+    restart: unless-stopped
+    env_file: .env
     volumes:
-      - planner_2026:/app/planner_2026
-      - planner_2027:/app/planner_2027
-    command: ["2026"]
+      - planner-data:/data
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
 
 volumes:
-  planner_2026:
-  planner_2027:
+  planner-data:

@@ -1,6 +1,6 @@
 # Plan: Review, CalSync-Vergleich und Deployment auf Hostinger
 
-Stand: 19.11.2026
+Stand: 19.11.2026 · **Update 20.11.2026:** Phase 1 ist umgesetzt (Paket `planner/`, Google Tasks und Calendar über Composio, ICS, Upload über die reMarkable Cloud mit `rmapi`, Docker, Tests). Anleitung für Phase 2–5: [`deploy/HOSTINGER.md`](deploy/HOSTINGER.md).
 
 ## 1. Kurzfazit
 

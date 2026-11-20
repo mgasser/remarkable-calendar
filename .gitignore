@@ -1,17 +1,9 @@
-# env, etc
 __pycache__/
 .venv/
-docker-compose-override.yml
-
-# outputs
-planner_*/
+.pytest_cache/
 *.pdf
-
-# secrets
-configuration/credentials.json
-configuration/token.json 
-configuration/.env
+*.pdf.tmp
+data/
 .env
-token.json
-credentials.json
-
+rmapi.conf
+docker-compose.override.yml
