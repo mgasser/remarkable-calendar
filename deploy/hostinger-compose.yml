@@ -1,14 +1,21 @@
 # Compose-Datei für den Hostinger Docker Manager (hPanel -> VPS -> Docker Manager -> Compose).
-# Docker baut das Image direkt aus dem GitHub-Repository; es muss nichts auf den Server kopiert werden.
-# Die Variablen trägt man im Docker Manager unter "Environment" ein (Format KEY=value, eine pro Zeile).
-# GIT_REF: Branch oder Tag, der gebaut wird (Standard: main).
+# Der Docker Manager baut keine Images. Darum startet der Container aus dem offiziellen Python-Image und
+# lädt beim Start deploy/bootstrap.sh, den Code (Branch/Tag GIT_REF) und rmapi (Prüfsumme) von GitHub.
+# Variablen im Docker Manager unter "Environment" eintragen (KEY=value, eine pro Zeile).
 services:
   planner:
-    build:
-      context: https://github.com/mgasser/remarkable-calendar.git#${GIT_REF:-main}
-    image: remarkable-calendar:latest
+    image: python:3.12-slim
     restart: unless-stopped
+    entrypoint: ["sh", "-c"]
+    command:
+      - >-
+        python -c "import urllib.request as u;
+        u.urlretrieve('https://raw.githubusercontent.com/$${GIT_REPO}/$${GIT_REF}/deploy/bootstrap.sh', '/bootstrap.sh')"
+        && exec sh /bootstrap.sh serve
     environment:
+      GIT_REPO: "${GIT_REPO:-mgasser/remarkable-calendar}"
+      GIT_REF: "${GIT_REF:-main}"
+      DATA_DIR: /data
       TZ: "${TZ:-Europe/Zurich}"
       PLANNER_LANGUAGE: "${PLANNER_LANGUAGE:-de}"
       PAGE_FORMAT: "${PAGE_FORMAT:-remarkable}"
@@ -36,6 +43,11 @@ services:
       HEALTHCHECK_URL: "${HEALTHCHECK_URL:-}"
     volumes:
       - planner-data:/data
+    healthcheck:
+      test: ["CMD", "sh", "-c", "cd /app && python -m planner healthcheck"]
+      interval: 30m
+      timeout: 30s
+      start_period: 15m
     logging:
       driver: json-file
       options:
