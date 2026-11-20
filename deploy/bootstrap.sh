@@ -5,7 +5,7 @@ set -eu
 
 GIT_REPO="${GIT_REPO:-mgasser/remarkable-calendar}"
 GIT_REF="${GIT_REF:-main}"
-export GIT_REPO GIT_REF DATA_DIR="${DATA_DIR:-/data}" PYTHONUNBUFFERED=1
+export GIT_REPO GIT_REF DATA_DIR="${DATA_DIR:-/data}" PYTHONUNBUFFERED=1 DEBIAN_FRONTEND=noninteractive
 
 echo "bootstrap: fetching ${GIT_REPO}@${GIT_REF} and rmapi"
 python - <<'EOF'

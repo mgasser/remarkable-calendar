@@ -65,7 +65,8 @@ class CloudSync:
     def upload(self, files: list[Path]) -> None:
         if not self.authenticated:
             raise RmapiError(f"Not logged in to reMarkable Cloud ({self.config_path} missing). "
-                             "Run: docker compose run --rm planner auth")
+                             "Set RMAPI_ONE_TIME_CODE (code from https://my.remarkable.com/device/desktop/connect) "
+                             "and restart, or run: docker compose run --rm planner auth CODE")
         self.ensure_folder()
         for f in files:
             self._run("put", "--content-only", str(f), self.folder)

@@ -6,24 +6,23 @@ Voraussetzungen: VPS mit Docker (Hostinger-Vorlage «Docker» oder Docker Manage
 
 ## Variante A: Docker Manager in hPanel (ohne SSH)
 
-1. hPanel → **VPS** → **Docker Manager** → **Compose** → neues Projekt `remarkable-calendar`.
-2. Als Compose-Inhalt den Text aus [`hostinger-compose.yml`](hostinger-compose.yml) einfügen. Docker baut das Image direkt aus diesem GitHub-Repository.
-3. Unter **Environment** mindestens eintragen:
+Der Docker Manager baut keine Images. [`hostinger-compose.yml`](hostinger-compose.yml) startet deshalb das offizielle Image `python:3.12-slim` und lädt bei jedem Start [`bootstrap.sh`](bootstrap.sh), den Code des Branches `GIT_REF` und `rmapi` (mit Prüfsumme) von GitHub.
+
+1. hPanel → **VPS** → **Docker Manager** → Projekt `remarkable-calendar` (oder neu anlegen und den Inhalt von `hostinger-compose.yml` einfügen).
+2. Unter **Environment** ergänzen:
    ```
    COMPOSIO_API_KEY=...
    COMPOSIO_USER_ID=...
+   GOOGLE_TASKS_LISTS=DO,INBOX
    GOOGLE_CALENDAR_IDS=primary
-   PAGE_FORMAT=remarkable
    RMAPI_ONE_TIME_CODE=abcd1234
    ```
-   Solange die Änderungen noch nicht in `main` gemergt sind, zusätzlich `GIT_REF=claude/epic-cerf-y6sgqr`.
-4. **Deploy**. Beim ersten Start meldet sich der Container mit dem Einmalcode an und erzeugt den Planer sofort.
-5. In den Logs des Projekts prüfen: `reMarkable Cloud: logged in` und `Uploaded … to /Kalender`.
-6. `RMAPI_ONE_TIME_CODE` danach wieder leeren. Das Token liegt im Volume und bleibt bei Neustarts und Updates erhalten.
+   Solange die Änderungen nicht in `main` gemergt sind, muss `GIT_REF=claude/epic-cerf-y6sgqr` gesetzt bleiben.
+3. Speichern und neu deployen. Den Einmalcode erst direkt davor erzeugen.
+4. In den Logs prüfen: `reMarkable Cloud: logged in` und `Uploaded … to /Kalender`.
+5. `RMAPI_ONE_TIME_CODE` wieder leeren. Das Token liegt im Volume und bleibt bei Neustarts erhalten.
 
-**Update:** Projekt im Docker Manager neu deployen (baut neu aus GitHub).
-
-Die Variante setzt voraus, dass das GitHub-Repository öffentlich ist. Bei einem privaten Repository Variante B nehmen.
+**Update:** Container neu starten. Er lädt dabei den aktuellen Stand von `GIT_REF`.
 
 ## Variante B: per SSH
 
