@@ -1,8 +1,7 @@
-reportlab
-python-dotenv
-python-dateutil
-requests
-google-auth-oauthlib
-google-auth-httplib2
-google-api-python-client
-paramiko
+reportlab==5.1.0
+requests==2.34.2
+python-dotenv==1.1.1
+icalendar==7.3.0
+recurring-ical-events==3.8.2
+tzdata==2026.6
+paramiko==5.1.0
